@@ -123,6 +123,12 @@ void checkIntType(Type* type) {
   else error(ERR_TYPE_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
 }
 
+void checkFloatType(Type* type) {
+  if ((type != NULL) && (type->typeClass == TP_FLOAT))
+    return;
+  else error(ERR_TYPE_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
+}
+
 void checkCharType(Type* type) {
   if ((type != NULL) && (type->typeClass == TP_CHAR))
     return;

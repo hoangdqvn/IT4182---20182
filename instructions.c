@@ -50,8 +50,10 @@ int emitEP(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_EP, DC_VALUE, D
 int emitEF(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_EF, DC_VALUE, DC_VALUE); }
 int emitRC(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_RC, DC_VALUE, DC_VALUE); }
 int emitRI(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_RI, DC_VALUE, DC_VALUE); }
+int emitRF(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_RF, DC_VALUE, DC_VALUE); }
 int emitWRC(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_WRC, DC_VALUE, DC_VALUE); }
 int emitWRI(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_WRI, DC_VALUE, DC_VALUE); }
+int emitWRF(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_WRF, DC_VALUE, DC_VALUE); }
 int emitWLN(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_WLN, DC_VALUE, DC_VALUE); }
 int emitAD(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_AD, DC_VALUE, DC_VALUE); }
 int emitSB(CodeBlock* codeBlock) { return emitCode(codeBlock, OP_SB, DC_VALUE, DC_VALUE); }
@@ -86,8 +88,10 @@ void printInstruction(Instruction* inst) {
   case OP_EF: printf("EF"); break;
   case OP_RC: printf("RC"); break;
   case OP_RI: printf("RI"); break;
+  case OP_RF: printf("RF"); break;
   case OP_WRC: printf("WRC"); break;
   case OP_WRI: printf("WRI"); break;
+  case OP_WRF: printf("WRF"); break;
   case OP_WLN: printf("WLN"); break;
   case OP_AD: printf("AD"); break;
   case OP_SB: printf("SB"); break;

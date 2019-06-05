@@ -14,6 +14,7 @@
 #define DC_VALUE 0
 #define INT_SIZE 1
 #define CHAR_SIZE 1
+#define FLOAT_SIZE 1
 
 typedef int WORD;
 
@@ -33,8 +34,10 @@ enum OpCode {
   OP_EF,   // Exit Function    t := b;  pc := s[b+2];  b := s[b+1];
   OP_RC,   // Read Char        read one character into s[s[t]];  t := t - 1;
   OP_RI,   // Read Integer     read integer to s[s[t]];  t := t-1;
+  OP_RF,   // Read Float       read float to s[s[t]];  t := t-1;
   OP_WRC,  // Write Char       write one character from s[t];  t := t-1;
   OP_WRI,  // Write Int        write integer from s[t];  t := t-1;
+  OP_WRF,  // Write Float      write float from s[t]; t:=t-1;
   OP_WLN,  // WriteLN          CR/LF
   OP_AD,   // Add              t := t-1;  s[t] := s[t] + s[t+1];
   OP_SB,   // Substract        t := t-1;  s[t] := s[t] - s[t+1];
@@ -89,8 +92,10 @@ int emitEP(CodeBlock* codeBlock);
 int emitEF(CodeBlock* codeBlock);
 int emitRC(CodeBlock* codeBlock);
 int emitRI(CodeBlock* codeBlock);
+int emitRF(CodeBlock* codeBlock);
 int emitWRC(CodeBlock* codeBlock);
 int emitWRI(CodeBlock* codeBlock);
+int emitWRF(CodeBlock* codeBlock);
 int emitWLN(CodeBlock* codeBlock);
 int emitAD(CodeBlock* codeBlock);
 int emitSB(CodeBlock* codeBlock);

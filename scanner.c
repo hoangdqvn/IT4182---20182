@@ -84,18 +84,33 @@ Token* readIdentKeyword(void) {
 Token* readNumber(void) {
   Token *token = makeToken(TK_NUMBER, lineNo, colNo);
   int count = 0;
+  int soDauCham = 0;
 
-  while ((currentChar != EOF) && (charCodes[currentChar] == CHAR_DIGIT)) {
+  /*while ((currentChar != EOF) && (charCodes[currentChar] == CHAR_DIGIT)) {
     if (count <= MAX_NUMBER_LEN) token->string[count++] = (char)currentChar;
     readChar();
   }
+*/
+  while ((currentChar != EOF) && ((charCodes[currentChar] == CHAR_DIGIT)||(charCodes[currentChar] == CHAR_PERIOD && soDauCham==0))) { //gap ki tu ket thuc file hoac gap chu so
+    if (count <= MAX_NUMBER_LEN){
+      token->string[count++] = (char)currentChar;
+      if(charCodes[currentChar] == CHAR_PERIOD) soDauCham++;
+    }
+    readChar();
+  }
+
     if (count > MAX_NUMBER_LEN) {
     error(ERR_IDENT_TOO_LONG, token->lineNo, token->colNo);
     return token;
   }
 
   token->string[count] = '\0';
-  token->value = atoi(token->string);
+  if(soDauCham) {
+    token->tokenType = TK_FLOAT;
+    token->valueF = atof(token->string);
+  }
+  else token->value = atoi(token->string);
+
   return token;
 }
 
@@ -206,7 +221,21 @@ Token* getToken(void) {
     if ((currentChar != EOF) && (charCodes[currentChar] == CHAR_RPAR)) {
       readChar();
       return makeToken(SB_RSEL, ln, cn);
-    } else return makeToken(SB_PERIOD, ln, cn);
+    }
+    else if((currentChar != EOF) && (charCodes[currentChar] == CHAR_DIGIT)){
+      token = makeToken(TK_FLOAT, ln, cn);
+      int count = 2;
+      token->string[0] = '0';
+      token->string[1] = '.';
+      while ((currentChar != EOF) && (charCodes[currentChar] == CHAR_DIGIT)) {
+        token->string[count++] = (char)currentChar;
+        readChar();
+      }
+      token->string[count] = '\0';
+      token->valueF = atof(token->string);
+      return token;
+    }
+    else return makeToken(SB_PERIOD, ln, cn);
   case CHAR_SEMICOLON:
     token = makeToken(SB_SEMICOLON, lineNo, colNo);
     readChar();
@@ -279,6 +308,7 @@ void printToken(Token *token) {
   case TK_NONE: printf("TK_NONE\n"); break;
   case TK_IDENT: printf("TK_IDENT(%s)\n", token->string); break;
   case TK_NUMBER: printf("TK_NUMBER(%s)\n", token->string); break;
+  case TK_FLOAT: printf("TK_FLOAT(%s)\n", token->string); break;
   case TK_CHAR: printf("TK_CHAR(\'%s\')\n", token->string); break;
   case TK_EOF: printf("TK_EOF\n"); break;
 
@@ -287,6 +317,7 @@ void printToken(Token *token) {
   case KW_TYPE: printf("KW_TYPE\n"); break;
   case KW_VAR: printf("KW_VAR\n"); break;
   case KW_INTEGER: printf("KW_INTEGER\n"); break;
+  case KW_FLOAT: printf("KW_FLOAT\n"); break;
   case KW_CHAR: printf("KW_CHAR\n"); break;
   case KW_ARRAY: printf("KW_ARRAY\n"); break;
   case KW_OF: printf("KW_OF\n"); break;
@@ -322,6 +353,8 @@ void printToken(Token *token) {
   case SB_RPAR: printf("SB_RPAR\n"); break;
   case SB_LSEL: printf("SB_LSEL\n"); break;
   case SB_RSEL: printf("SB_RSEL\n"); break;
+  case SB_LB: printf("SB_LB\n"); break;
+  case SB_GB: printf("SB_GB\n"); break;
   }
 }
 

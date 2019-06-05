@@ -19,11 +19,14 @@ void freeReferenceList(ObjectNode *objList);
 SymTab* symtab;
 Type* intType;
 Type* charType;
+Type* floatType;
 Object* writeiProcedure;
 Object* writecProcedure;
+Object* writefProcedure;
 Object* writelnProcedure;
 Object* readiFunction;
 Object* readcFunction;
+Object* readfFunction;
 
 /******************* Type utilities ******************************/
 
@@ -36,6 +39,12 @@ Type* makeIntType(void) {
 Type* makeCharType(void) {
   Type* type = (Type*) malloc(sizeof(Type));
   type->typeClass = TP_CHAR;
+  return type;
+}
+
+Type* makeFloatType(void) {
+  Type* type = (Type*) malloc(sizeof(Type));
+  type->typeClass = TP_FLOAT;
   return type;
 }
 
@@ -71,6 +80,7 @@ void freeType(Type* type) {
   switch (type->typeClass) {
   case TP_INT:
   case TP_CHAR:
+  case TP_FLOAT:
     free(type);
     break;
   case TP_ARRAY:
@@ -86,6 +96,8 @@ int sizeOfType(Type* type) {
     return INT_SIZE;
   case TP_CHAR:
     return CHAR_SIZE;
+  case TP_FLOAT:
+    return FLOAT_SIZE;
   case TP_ARRAY:
     return (type->arraySize * sizeOfType(type->elementType));
   }
@@ -108,11 +120,20 @@ ConstantValue* makeCharConstant(char ch) {
   return value;
 }
 
+ConstantValue* makeFloatConstant(float f) {
+  ConstantValue* value = (ConstantValue*) malloc(sizeof(ConstantValue));
+  value->type = TP_FLOAT;
+  value->floatValue = f;
+  return value;
+}
+
 ConstantValue* duplicateConstantValue(ConstantValue* v) {
   ConstantValue* value = (ConstantValue*) malloc(sizeof(ConstantValue));
   value->type = v->type;
   if (v->type == TP_INT)
     value->intValue = v->intValue;
+  else if (v->type == TP_FLOAT)
+    value->floatValue = v->floatValue;
   else
     value->charValue = v->charValue;
   return value;
@@ -308,12 +329,24 @@ void initSymTab(void) {
   declareObject(readiFunction);
   readiFunction->funcAttrs->returnType = makeIntType();
 
+  readfFunction = createFunctionObject("READF");
+  declareObject(readfFunction);
+  readfFunction->funcAttrs->returnType = makeFloatType();
+
 
   writeiProcedure = createProcedureObject("WRITEI");
   declareObject(writeiProcedure);
   enterBlock(writeiProcedure->procAttrs->scope);
     param = createParameterObject("i", PARAM_VALUE);
     param->paramAttrs->type = makeIntType();
+    declareObject(param);
+  exitBlock();
+
+  writefProcedure = createProcedureObject("WRITEF");
+  declareObject(writefProcedure);
+  enterBlock(writefProcedure->procAttrs->scope);
+    param = createParameterObject("f", PARAM_VALUE);
+    param->paramAttrs->type = makeFloatType();
     declareObject(param);
   exitBlock();
 
@@ -329,6 +362,7 @@ void initSymTab(void) {
   declareObject(writelnProcedure);
 
   intType = makeIntType();
+  floatType = makeFloatType();
   charType = makeCharType();
 }
 

@@ -20,6 +20,7 @@ Token *lookAhead;
 Type *indexArrayVar;
 extern Type* intType;
 extern Type* charType;
+extern Type* floatType;
 extern SymTab* symtab;
 
 void scan(void) {
@@ -207,6 +208,10 @@ ConstantValue* compileUnsignedConstant(void) {
     eat(TK_NUMBER);
     constValue = makeIntConstant(currentToken->value);
     break;
+  case TK_FLOAT:
+    eat(TK_FLOAT);
+    constValue = makeFloatConstant(currentToken->value);
+    break;
   case TK_IDENT:
     eat(TK_IDENT);
 
@@ -258,6 +263,10 @@ ConstantValue* compileConstant2(void) {
     eat(TK_NUMBER);
     constValue = makeIntConstant(currentToken->value);
     break;
+  case TK_FLOAT:
+    eat(TK_FLOAT);
+    constValue = makeFloatConstant(currentToken->value);
+    break;
   case TK_IDENT:
     eat(TK_IDENT);
     obj = checkDeclaredConstant(currentToken->string);
@@ -283,6 +292,10 @@ Type* compileType(void) {
   case KW_INTEGER:
     eat(KW_INTEGER);
     type =  makeIntType();
+    break;
+  case KW_FLOAT:
+    eat(KW_FLOAT);
+    type =  makeFloatType();
     break;
   case KW_CHAR:
     eat(KW_CHAR);
@@ -319,6 +332,10 @@ Type* compileBasicType(void) {
   case KW_INTEGER:
     eat(KW_INTEGER);
     type = makeIntType();
+    break;
+  case KW_FLOAT:
+    eat(KW_FLOAT);
+    type = makeFloatType();
     break;
   case KW_CHAR:
     eat(KW_CHAR);

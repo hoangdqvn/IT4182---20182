@@ -10,13 +10,14 @@
 #include "token.h"
 #include "instructions.h"
 
-enum TypeClass {
+enum TypeClass {//Phan loai ky hieu
   TP_INT,
   TP_CHAR,
+  TP_FLOAT,
   TP_ARRAY
 };
 
-enum ObjectKind {
+enum ObjectKind {//Phan loai ky hieu
   OBJ_CONSTANT,
   OBJ_VARIABLE,
   OBJ_TYPE,
@@ -33,7 +34,7 @@ enum ParamKind {
 
 struct Type_ {
   enum TypeClass typeClass;
-  int arraySize;
+  int arraySize;//chi su dung cho kieu mang
   struct Type_ *elementType;
 };
 
@@ -41,11 +42,12 @@ typedef struct Type_ Type;
 typedef struct Type_ BasicType;
 
 
-struct ConstantValue_ {
+struct ConstantValue_ {//Hang so
   enum TypeClass type;
   union {
     int intValue;
     char charValue;
+    float floatValue;
   };
 };
 
@@ -61,8 +63,7 @@ struct ConstantAttributes_ {
 
 struct VariableAttributes_ {
   Type *type;
-  struct Scope_ *scope;
-
+  struct Scope_ *scope;//Pham vi cua bien, su dung cho pha sinh ma
   int localOffset;        // offset of the local variable calculated from the base of the stack frame
 };
 
@@ -71,7 +72,7 @@ struct TypeAttributes_ {
 };
 
 struct ProcedureAttributes_ {
-  struct ObjectNode_ *paramList;
+  struct ObjectNode_ *paramList;//Tham bien hoac Tham tri
   struct Scope_* scope;
 
   int paramCount;
@@ -108,7 +109,7 @@ typedef struct ProcedureAttributes_ ProcedureAttributes;
 typedef struct ProgramAttributes_ ProgramAttributes;
 typedef struct ParameterAttributes_ ParameterAttributes;
 
-struct Object_ {
+struct Object_ {//Thuoc tinh cua doi tuong tren bang ky hieu
   char name[MAX_IDENT_LEN];
   enum ObjectKind kind;
   union {
@@ -131,33 +132,37 @@ struct ObjectNode_ {
 
 typedef struct ObjectNode_ ObjectNode;
 
-struct Scope_ {
-  ObjectNode *objList;
-  Object *owner;
-  struct Scope_ *outer;
+struct Scope_ {//Pham vi cua 1 bloc
+  ObjectNode *objList;//Danh sach doi tuong cua block
+  Object *owner;//Ham, Thu tuc, Chuong trinh tuong ung voi Block
+  struct Scope_ *outer;//Pham vi bao ngoai
   int frameSize;
 };
 
 typedef struct Scope_ Scope;
 
-struct SymTab_ {
-  Object* program;
-  Scope* currentScope;
-  ObjectNode *globalObjectList;
+struct SymTab_ {//Bang ky hieu
+  Object* program;//Chuong trinh chinh
+  Scope* currentScope;//Pham vi hien tai
+  ObjectNode *globalObjectList;//Cac doi tuong toan cuc nhu WRITEI, WRITEC, WRITELN, READI, READC
 };
 
 typedef struct SymTab_ SymTab;
 
+//Cac ham tao kieu
 Type* makeIntType(void);
 Type* makeCharType(void);
+Type* makeFloatType(void);
 Type* makeArrayType(int arraySize, Type* elementType);
 Type* duplicateType(Type* type);
 int compareType(Type* type1, Type* type2);
 void freeType(Type* type);
 int sizeOfType(Type* type);
 
+//Cac ham tao gia tri hang so
 ConstantValue* makeIntConstant(int i);
 ConstantValue* makeCharConstant(char ch);
+ConstantValue* makeFloatConstant(float f);
 ConstantValue* duplicateConstantValue(ConstantValue* v);
 
 Scope* createScope(Object* owner);
@@ -172,7 +177,7 @@ Object* createParameterObject(char *name, enum ParamKind kind);
 
 Object* findObject(ObjectNode *objList, char *name);
 
-void initSymTab(void);
+void initSymTab(void);//Khoi tao bang ky hieu
 void cleanSymTab(void);
 void enterBlock(Scope* scope);
 void exitBlock(void);
