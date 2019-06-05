@@ -13,8 +13,10 @@ extern SymTab* symtab;
 
 extern Object* readiFunction;
 extern Object* readcFunction;
+extern Object* readfFunction;
 extern Object* writeiProcedure;
 extern Object* writecProcedure;
+extern Object* writefProcedure;
 extern Object* writelnProcedure;
 
 CodeBlock* codeBlock;
@@ -75,6 +77,8 @@ void genReturnValueValue(Object* func) {
 void genPredefinedProcedureCall(Object* proc) {
   if (proc == writeiProcedure)
     genWRI();
+  else if (proc == writefProcedure)
+    genWRF();
   else if (proc == writecProcedure)
     genWRC();
   else if (proc == writelnProcedure)
@@ -90,6 +94,8 @@ void genProcedureCall(Object* proc) {
 void genPredefinedFunctionCall(Object* func) {
   if (func == readiFunction)
     genRI();
+  if (func == readfFunction)
+    genRF();
   else if (func == readcFunction)
     genRC();
 }
@@ -164,12 +170,20 @@ void genRI(void) {
   emitRI(codeBlock);
 }
 
+void genRF(void) {
+  emitRF(codeBlock);
+}
+
 void genWRC(void) {
   emitWRC(codeBlock);
 }
 
 void genWRI(void) {
   emitWRI(codeBlock);
+}
+
+void genWRF(void) {
+  emitWRF(codeBlock);
 }
 
 void genWLN(void) {
@@ -237,11 +251,11 @@ CodeAddress getCurrentCodeAddress(void) {
 }
 
 int isPredefinedFunction(Object* func) {
-  return ((func == readiFunction) || (func == readcFunction));
+  return ((func == readiFunction) || (func == readcFunction) || (func == readfFunction));
 }
 
 int isPredefinedProcedure(Object* proc) {
-  return ((proc == writeiProcedure) || (proc == writecProcedure) || (proc == writelnProcedure));
+  return ((proc == writeiProcedure) || (proc == writecProcedure) || (proc == writelnProcedure) || (proc == writefProcedure));
 }
 
 void initCodeBuffer(void) {
